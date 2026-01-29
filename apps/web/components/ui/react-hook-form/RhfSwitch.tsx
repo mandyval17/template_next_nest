@@ -2,7 +2,7 @@
 
 import type { FieldPath, FieldValues } from "react-hook-form";
 import { useController, useFormContext } from "react-hook-form";
-import { Switch } from "./Switch";
+import { Switch } from "../Switch";
 
 export type RhfSwitchProps<T extends FieldValues> = {
   name: FieldPath<T>;
