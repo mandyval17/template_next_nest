@@ -1,3 +1,4 @@
+import { AuthGuard } from "@/components/AuthGuard";
 import { AuthProvider } from "@/components/providers/AuthProvider";
 import { QueryProvider } from "@/components/providers/QueryProvider";
 import theme from "@/lib/theme";
@@ -30,7 +31,9 @@ export default function RootLayout({
         <AppRouterCacheProvider>
           <ThemeProvider theme={theme}>
             <QueryProvider>
-              <AuthProvider>{children}</AuthProvider>
+              <AuthProvider>
+                <AuthGuard>{children}</AuthGuard>
+              </AuthProvider>
             </QueryProvider>
           </ThemeProvider>
         </AppRouterCacheProvider>

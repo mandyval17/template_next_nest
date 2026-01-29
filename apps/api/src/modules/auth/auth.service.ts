@@ -2,6 +2,7 @@ import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
+import type ms from 'ms';
 import { randomUUID } from 'node:crypto';
 import { PrismaService } from '../../prisma/prisma.service';
 import type { AuthTokensResult, TokenPayload, User } from './auth.schemas';
@@ -32,7 +33,7 @@ export class AuthService {
     private readonly prisma: PrismaService,
     private readonly jwt: JwtService,
     private readonly config: ConfigService,
-  ) {}
+  ) { }
 
   async register(email: string, password: string): Promise<User> {
     const existing = await this.prisma.user.findUnique({ where: { email } });
@@ -92,7 +93,7 @@ export class AuthService {
     });
     if (!stored || stored.expiresAt < new Date()) {
       if (stored)
-        await this.prisma.refreshToken.delete({ where: { id: stored.id } }).catch(() => {});
+        await this.prisma.refreshToken.delete({ where: { id: stored.id } }).catch(() => { });
       throw new UnauthorizedException('Invalid or expired refresh token');
     }
     await this.prisma.refreshToken.delete({ where: { id: stored.id } });
@@ -124,9 +125,9 @@ export class AuthService {
 
   private issueAccess(userId: string, email: string): string {
     const payload: TokenPayload = { sub: userId, email, type: 'access' };
-    return this.jwt.sign(payload, {
-      expiresIn: this.config.get<string>('JWT_ACCESS_EXPIRES') ?? '15m',
-    });
+    const expiresIn =
+      (this.config.get<string>('JWT_ACCESS_EXPIRES') ?? '15m') as ms.StringValue;
+    return this.jwt.sign(payload, { expiresIn });
   }
 
   private async issueAndStoreRefresh(userId: string) {

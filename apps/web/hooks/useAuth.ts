@@ -6,7 +6,7 @@ import { createContext, useContext } from "react";
 
 export type AuthContextType = {
   user: User | null | undefined;
-  login: (data: LoginFormData) => void;
+  login: (data: LoginFormData, options?: { redirectTo?: string }) => void;
   logout: () => void;
   loginState: UseMutationResult<User, Error, LoginFormData>;
   logoutState: UseMutationResult<void, Error, void>;

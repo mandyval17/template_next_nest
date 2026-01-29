@@ -9,9 +9,13 @@ import { Box, Card, CardContent, Link, Stack, Typography } from "@mui/material";
 import type { LoginFormData } from "@omni-site/schemas";
 import { loginSchema } from "@omni-site/schemas";
 import NextLink from "next/link";
+import { useSearchParams } from "next/navigation";
 import { FormProvider, useForm } from "react-hook-form";
 
 export default function LoginPage() {
+  const searchParams = useSearchParams();
+  const fromParam = searchParams.get("from") ?? "/";
+  const from = fromParam.startsWith("/") ? fromParam : "/";
   const { login, loginState } = useAuth();
   const methods = useForm<LoginFormData>({
     defaultValues: { email: "", password: "" },
@@ -40,7 +44,7 @@ export default function LoginPage() {
             JWT + cookies + refresh tokens
           </Typography>
           <FormProvider {...methods}>
-            <form onSubmit={handleSubmit((data) => login(data))}>
+            <form onSubmit={handleSubmit((data) => login(data, { redirectTo: from }))}>
               <Stack spacing={2}>
                 <RhfTextField<LoginFormData>
                   name="email"

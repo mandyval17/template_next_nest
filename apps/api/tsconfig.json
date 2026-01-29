@@ -16,6 +16,10 @@
     "incremental": true,
     "forceConsistentCasingInFileNames": true,
     "skipLibCheck": true,
-    "types": ["node", "jest"]
-  }
+    "types": ["node", "jest"],
+    "paths": {
+      "@omni-site/schemas": ["../../packages/schemas/src/index.ts"]
+    }
+  },
+  "include": ["src/**/*"]
 }

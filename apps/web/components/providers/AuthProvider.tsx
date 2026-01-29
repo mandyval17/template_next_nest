@@ -21,9 +21,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     : meQuery.data ?? null;
 
   const login = useCallback(
-    (data: LoginFormData) => {
+    (data: LoginFormData, options?: { redirectTo?: string }) => {
       loginMutation.mutate(data, {
-        onSuccess: () => router.push("/"),
+        onSuccess: () => router.push(options?.redirectTo ?? "/"),
         onError: () => { },
       });
     },
