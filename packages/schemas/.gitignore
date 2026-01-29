@@ -1,0 +1,8 @@
+# Build
+dist
+
+# Dependencies (when not hoisted)
+node_modules
+
+# TypeScript
+*.tsbuildinfo

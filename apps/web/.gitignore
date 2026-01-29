@@ -1,0 +1,26 @@
+# Next.js
+.next
+out
+build
+
+# Dependencies (when not hoisted)
+node_modules
+
+# Env
+.env
+.env.*
+!.env.example
+
+# Debug
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Vercel
+.vercel
+
+# TypeScript
+*.tsbuildinfo
+
+# Testing
+coverage
