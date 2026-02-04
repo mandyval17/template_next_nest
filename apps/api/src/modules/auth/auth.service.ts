@@ -1,4 +1,4 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { BadRequestException, Injectable, UnauthorizedException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
@@ -6,7 +6,7 @@ import type ms from 'ms';
 import { randomUUID } from 'node:crypto';
 import { PrismaService } from '../../prisma/prisma.service';
 import type { AuthTokensResult, TokenPayload, User } from './auth.schemas';
-import type { LoginDto } from './dto';
+import type { LoginDto, RegisterDto } from './dto';
 
 const ACCESS_COOKIE = 'access_token';
 const REFRESH_COOKIE = 'refresh_token';
@@ -35,14 +35,22 @@ export class AuthService {
     private readonly config: ConfigService,
   ) { }
 
-  async register(email: string, password: string): Promise<User> {
-    const existing = await this.prisma.user.findUnique({ where: { email } });
-    if (existing) throw new UnauthorizedException('Email already registered');
-    const passwordHash = await bcrypt.hash(password, SALT_ROUNDS);
-    const user = await this.prisma.user.create({
-      data: { email, passwordHash },
-    });
-    return { id: user.id, email: user.email };
+  async register(dto: RegisterDto): Promise<User> {
+    const { email, password } = dto;
+    try {
+      const user = await this.prisma.user.create({
+        data: { email, passwordHash: await bcrypt.hash(password, SALT_ROUNDS) },
+      });
+      return { id: user.id, email: user.email };
+    } catch (error) {
+      const prismaError = error as { code?: string; meta?: { target?: string[] } };
+      if (prismaError?.code === 'P2002') {
+        throw new BadRequestException('Email already registered');
+      }
+      throw new BadRequestException(
+        error instanceof Error ? error.message : 'Registration failed',
+      );
+    }
   }
 
   async validateUser(email: string, password: string): Promise<User | null> {

@@ -1,16 +1,16 @@
 "use client";
 
 import type { LoginFormData, User } from "@omni-site/schemas";
-import type { UseMutationResult, UseQueryResult } from "@tanstack/react-query";
+import type { UseMutationResult } from "@tanstack/react-query";
 import { createContext, useContext } from "react";
 
 export type AuthContextType = {
+  isLoading: boolean;
   user: User | null | undefined;
   login: (data: LoginFormData, options?: { redirectTo?: string }) => void;
   logout: () => void;
-  loginState: UseMutationResult<User, Error, LoginFormData>;
-  logoutState: UseMutationResult<void, Error, void>;
-  meQuery: UseQueryResult<User | null, Error>;
+  loginState: UseMutationResult<ApiResponse<{ user: User }>, CustomError, { payload: LoginFormData }>;
+  logoutState: UseMutationResult<ApiResponse<{ ok: true }>, CustomError, void>;
 };
 
 const AuthContext = createContext<AuthContextType | null>(null);

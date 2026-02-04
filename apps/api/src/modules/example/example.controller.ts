@@ -5,7 +5,7 @@ import { ExampleService } from './example.service';
 
 @Controller()
 export class ExampleController {
-  constructor(private readonly example: ExampleService) {}
+  constructor(private readonly example: ExampleService) { }
 
   @Get('examples')
   async list() {

@@ -1,32 +1,32 @@
 import { api } from "@/lib/api/axios";
 import type { LoginFormData, RegisterFormData, User } from "@omni-site/schemas";
 
-export async function loginApi(payload: LoginFormData): Promise<{ user: User }> {
-  const { data } = await api.post<{ user: User }>("/auth/login", payload);
-  return data;
+export async function loginApi({ payload }: { payload: LoginFormData }): Promise<ApiResponse<{ user: User }>> {
+  const res = await api.post<ApiResponse<{ user: User }>>("/auth/login", payload);
+  return res.data;
 }
 
 export async function registerApi(
-  payload: RegisterFormData
-): Promise<{ id: string; email: string }> {
-  const { data } = await api.post<{ id: string; email: string }>(
+  { payload }: { payload: RegisterFormData }
+): Promise<ApiResponse<{ id: string; email: string }>> {
+  const res = await api.post<ApiResponse<{ id: string; email: string }>>(
     "/auth/register",
     payload
   );
-  return data;
+  return res.data;
 }
 
-export async function logoutApi(): Promise<{ ok: boolean }> {
-  const { data } = await api.post<{ ok: boolean }>("/auth/logout");
-  return data;
+export async function logoutApi(): Promise<ApiResponse<{ ok: boolean }>> {
+  const res = await api.post<ApiResponse<{ ok: boolean }>>("/auth/logout");
+  return res.data;
 }
 
-export async function refreshApi(): Promise<{ user: User }> {
-  const { data } = await api.post<{ user: User }>("/auth/refresh");
-  return data;
+export async function refreshApi(): Promise<ApiResponse<{ user: User }>> {
+  const res = await api.post<ApiResponse<{ user: User }>>("/auth/refresh");
+  return res.data;
 }
 
-export async function meApi(): Promise<User> {
-  const { data } = await api.get<User>("/auth/me");
-  return data;
+export async function meApi(): Promise<ApiResponse<User>> {
+  const res = await api.get<ApiResponse<User>>("/auth/me");
+  return res.data;
 }

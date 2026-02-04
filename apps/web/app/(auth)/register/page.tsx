@@ -1,21 +1,18 @@
 "use client";
 
 import { Button } from "@/components/ui/Button";
-import { FormSubmitError } from "@/components/ui/FormSubmitError";
 import { RhfTextField } from "@/components/ui/react-hook-form/RhfTextField";
-import { api } from "@/lib/api/axios";
-import { useLoginMutation } from "@/lib/services/auth.service";
+import AuthService from "@/services/auth/auth.services";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Box, Card, CardContent, Link, Stack, Typography } from "@mui/material";
 import type { RegisterFormData } from "@omni-site/schemas";
 import { registerSchema } from "@omni-site/schemas";
 import NextLink from "next/link";
-import { useState } from "react";
 import { FormProvider, useForm } from "react-hook-form";
+import toast from "react-hot-toast";
 
 export default function RegisterPage() {
-  const [apiError, setApiError] = useState<string | null>(null);
-  const loginMutation = useLoginMutation();
+  const registerMutation = AuthService.useRegisterMutation();
   const methods = useForm<RegisterFormData>({
     defaultValues: { email: "", password: "" },
     resolver: zodResolver(registerSchema),
@@ -24,22 +21,14 @@ export default function RegisterPage() {
   const { handleSubmit, formState: { isSubmitting } } = methods;
 
   const onSubmit = async (data: RegisterFormData) => {
-    setApiError(null);
-    try {
-      await api.post("/auth/register", data);
-      loginMutation.mutate(
-        { email: data.email, password: data.password },
-        {
-          onSuccess: () => window.location.assign("/"),
-          onError: (err) => setApiError(err.message),
-        }
-      );
-    } catch (err: unknown) {
-      setApiError(err instanceof Error ? err.message : "Registration failed");
-    }
+    registerMutation.mutate({ data: data }, {
+      onSuccess: () => {
+        toast.success("Account created! Please sign in.");
+        window.location.assign("/login");
+      },
+      onError: (err) => toast.error(err?.response?.data?.message ?? err?.message ?? "Registration failed")
+    });
   };
-
-  const submitError = apiError ?? loginMutation.error?.message ?? null;
 
   return (
     <Box
@@ -77,12 +66,11 @@ export default function RegisterPage() {
                   fullWidth
                   autoComplete="new-password"
                 />
-                <FormSubmitError message={submitError} />
                 <Button
                   type="submit"
                   variant="contained"
                   fullWidth
-                  loading={loginMutation.isPending || isSubmitting}
+                  loading={registerMutation.isPending || isSubmitting}
                 >
                   Register
                 </Button>

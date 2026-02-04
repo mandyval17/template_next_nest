@@ -6,7 +6,10 @@ import { AppRouterCacheProvider } from "@mui/material-nextjs/v16-appRouter";
 import { ThemeProvider } from "@mui/material/styles";
 import type { Metadata } from "next";
 import { Roboto } from "next/font/google";
+import type { ComponentType } from "react";
 import "./globals.css";
+
+const CacheProvider = AppRouterCacheProvider as ComponentType<{ children: React.ReactNode }>;
 
 const roboto = Roboto({
   weight: ["300", "400", "500", "700"],
@@ -28,7 +31,7 @@ export default function RootLayout({
   return (
     <html lang="en" className={roboto.variable} suppressHydrationWarning>
       <body suppressHydrationWarning>
-        <AppRouterCacheProvider>
+        <CacheProvider>
           <ThemeProvider theme={theme}>
             <QueryProvider>
               <AuthProvider>
@@ -36,7 +39,7 @@ export default function RootLayout({
               </AuthProvider>
             </QueryProvider>
           </ThemeProvider>
-        </AppRouterCacheProvider>
+        </CacheProvider>
       </body>
     </html>
   );

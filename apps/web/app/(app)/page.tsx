@@ -8,7 +8,7 @@ import { Box, Stack, Typography } from "@mui/material";
 import Link from "next/link";
 
 export default function HomePage() {
-  const { user, logout, logoutState, meQuery } = useAuth();
+  const { user, logout, logoutState, isLoading } = useAuth();
 
   return (
     <Box
@@ -32,7 +32,7 @@ export default function HomePage() {
           mb: 2,
         }}
       >
-        {meQuery.isLoading ? (
+        {isLoading ? (
           <Typography variant="body2" color="text.secondary">
             Loading…
           </Typography>

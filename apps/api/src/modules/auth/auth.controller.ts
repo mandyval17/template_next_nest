@@ -20,12 +20,12 @@ const REFRESH = AuthService.refreshCookieName();
 
 @Controller('auth')
 export class AuthController {
-  constructor(private readonly auth: AuthService) {}
+  constructor(private readonly auth: AuthService) { }
 
   @Post('register')
   @ZodSerializerDto(MeResponseDto)
   async register(@Body() dto: RegisterDto) {
-    return this.auth.register(dto.email, dto.password);
+    return this.auth.register(dto);
   }
 
   @Post('login')

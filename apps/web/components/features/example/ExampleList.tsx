@@ -1,6 +1,6 @@
 "use client";
 
-import { useExamplesQuery } from "@/lib/services/example.service";
+import ExampleService from "@/services/example/example.services";
 import {
   Box,
   Card,
@@ -13,7 +13,8 @@ import {
 } from "@mui/material";
 
 export function ExampleList() {
-  const { data: examples, isLoading, error } = useExamplesQuery();
+  const { data, isLoading, error } = ExampleService.getExamples({});
+  const examples = data?.data;
 
   return (
     <Card sx={{ flex: 1, minWidth: 280 }}>
@@ -28,7 +29,7 @@ export function ExampleList() {
         )}
         {error && (
           <Typography variant="body2" color="error">
-            {error.message}
+            {error?.response?.data?.message ?? error.message}
           </Typography>
         )}
         {examples && (

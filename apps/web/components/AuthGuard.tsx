@@ -29,7 +29,7 @@ function LoadingScreen() {
 }
 
 export function AuthGuard({ children }: { children: React.ReactNode }) {
-  const { user, meQuery } = useAuth();
+  const { user, isLoading } = useAuth();
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -37,7 +37,7 @@ export function AuthGuard({ children }: { children: React.ReactNode }) {
   const isGuestOnlyRoute = GUEST_ONLY_PATHS.some((p) => pathname === p || pathname.startsWith(p + "/"));
 
   useEffect(() => {
-    if (meQuery.isPending) return;
+    if (isLoading) return;
 
     if (isGuestOnlyRoute) {
       if (user != null) {
@@ -49,9 +49,9 @@ export function AuthGuard({ children }: { children: React.ReactNode }) {
         router.replace(`/login?from=${encodeURIComponent(pathname ?? "/")}`);
       }
     }
-  }, [isGuestOnlyRoute, user, meQuery.isPending, router, pathname, searchParams]);
+  }, [isGuestOnlyRoute, user, isLoading, router, pathname, searchParams]);
 
-  if (meQuery.isPending) return <LoadingScreen />;
+  if (isLoading) return <LoadingScreen />;
 
   if (isGuestOnlyRoute && user != null) return null;
   if (!isGuestOnlyRoute && user == null) return null;
